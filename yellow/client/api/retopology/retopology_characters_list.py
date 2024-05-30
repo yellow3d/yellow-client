@@ -5,17 +5,23 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.character_retopology import CharacterRetopology
 from ...models.error_message import ErrorMessage
+from ...models.paginated_character_retopology_list import PaginatedCharacterRetopologyList
 from ...models.retopology_characters_list_state_item import RetopologyCharactersListStateItem
 from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
     *,
+    page: Union[Unset, int] = UNSET,
+    page_size: Union[Unset, int] = UNSET,
     state: Union[Unset, List[RetopologyCharactersListStateItem]] = UNSET,
 ) -> Dict[str, Any]:
     params: Dict[str, Any] = {}
+
+    params["page"] = page
+
+    params["page_size"] = page_size
 
     json_state: Union[Unset, List[str]] = UNSET
     if not isinstance(state, Unset):
@@ -39,7 +45,7 @@ def _get_kwargs(
 
 def _parse_response(
     *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[ErrorMessage, List["CharacterRetopology"]]]:
+) -> Optional[Union[ErrorMessage, PaginatedCharacterRetopologyList]]:
     if response.status_code == HTTPStatus.BAD_REQUEST:
         response_400 = ErrorMessage.from_dict(response.json())
 
@@ -49,12 +55,7 @@ def _parse_response(
 
         return response_401
     if response.status_code == HTTPStatus.OK:
-        response_200 = []
-        _response_200 = response.json()
-        for response_200_item_data in _response_200:
-            response_200_item = CharacterRetopology.from_dict(response_200_item_data)
-
-            response_200.append(response_200_item)
+        response_200 = PaginatedCharacterRetopologyList.from_dict(response.json())
 
         return response_200
     if client.raise_on_unexpected_status:
@@ -65,7 +66,7 @@ def _parse_response(
 
 def _build_response(
     *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[ErrorMessage, List["CharacterRetopology"]]]:
+) -> Response[Union[ErrorMessage, PaginatedCharacterRetopologyList]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -77,11 +78,15 @@ def _build_response(
 def sync_detailed(
     *,
     client: AuthenticatedClient,
+    page: Union[Unset, int] = UNSET,
+    page_size: Union[Unset, int] = UNSET,
     state: Union[Unset, List[RetopologyCharactersListStateItem]] = UNSET,
-) -> Response[Union[ErrorMessage, List["CharacterRetopology"]]]:
+) -> Response[Union[ErrorMessage, PaginatedCharacterRetopologyList]]:
     """Lists launched retopologies. Can be filtered based on their state.
 
     Args:
+        page (Union[Unset, int]):
+        page_size (Union[Unset, int]):
         state (Union[Unset, List[RetopologyCharactersListStateItem]]):
 
     Raises:
@@ -89,10 +94,12 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[ErrorMessage, List['CharacterRetopology']]]
+        Response[Union[ErrorMessage, PaginatedCharacterRetopologyList]]
     """
 
     kwargs = _get_kwargs(
+        page=page,
+        page_size=page_size,
         state=state,
     )
 
@@ -106,11 +113,15 @@ def sync_detailed(
 def sync(
     *,
     client: AuthenticatedClient,
+    page: Union[Unset, int] = UNSET,
+    page_size: Union[Unset, int] = UNSET,
     state: Union[Unset, List[RetopologyCharactersListStateItem]] = UNSET,
-) -> Optional[Union[ErrorMessage, List["CharacterRetopology"]]]:
+) -> Optional[Union[ErrorMessage, PaginatedCharacterRetopologyList]]:
     """Lists launched retopologies. Can be filtered based on their state.
 
     Args:
+        page (Union[Unset, int]):
+        page_size (Union[Unset, int]):
         state (Union[Unset, List[RetopologyCharactersListStateItem]]):
 
     Raises:
@@ -118,11 +129,13 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[ErrorMessage, List['CharacterRetopology']]
+        Union[ErrorMessage, PaginatedCharacterRetopologyList]
     """
 
     return sync_detailed(
         client=client,
+        page=page,
+        page_size=page_size,
         state=state,
     ).parsed
 
@@ -130,11 +143,15 @@ def sync(
 async def asyncio_detailed(
     *,
     client: AuthenticatedClient,
+    page: Union[Unset, int] = UNSET,
+    page_size: Union[Unset, int] = UNSET,
     state: Union[Unset, List[RetopologyCharactersListStateItem]] = UNSET,
-) -> Response[Union[ErrorMessage, List["CharacterRetopology"]]]:
+) -> Response[Union[ErrorMessage, PaginatedCharacterRetopologyList]]:
     """Lists launched retopologies. Can be filtered based on their state.
 
     Args:
+        page (Union[Unset, int]):
+        page_size (Union[Unset, int]):
         state (Union[Unset, List[RetopologyCharactersListStateItem]]):
 
     Raises:
@@ -142,10 +159,12 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[ErrorMessage, List['CharacterRetopology']]]
+        Response[Union[ErrorMessage, PaginatedCharacterRetopologyList]]
     """
 
     kwargs = _get_kwargs(
+        page=page,
+        page_size=page_size,
         state=state,
     )
 
@@ -157,11 +176,15 @@ async def asyncio_detailed(
 async def asyncio(
     *,
     client: AuthenticatedClient,
+    page: Union[Unset, int] = UNSET,
+    page_size: Union[Unset, int] = UNSET,
     state: Union[Unset, List[RetopologyCharactersListStateItem]] = UNSET,
-) -> Optional[Union[ErrorMessage, List["CharacterRetopology"]]]:
+) -> Optional[Union[ErrorMessage, PaginatedCharacterRetopologyList]]:
     """Lists launched retopologies. Can be filtered based on their state.
 
     Args:
+        page (Union[Unset, int]):
+        page_size (Union[Unset, int]):
         state (Union[Unset, List[RetopologyCharactersListStateItem]]):
 
     Raises:
@@ -169,12 +192,14 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[ErrorMessage, List['CharacterRetopology']]
+        Union[ErrorMessage, PaginatedCharacterRetopologyList]
     """
 
     return (
         await asyncio_detailed(
             client=client,
+            page=page,
+            page_size=page_size,
             state=state,
         )
     ).parsed

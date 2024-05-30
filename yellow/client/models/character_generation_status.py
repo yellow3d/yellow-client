@@ -15,11 +15,13 @@ class CharacterGenerationStatus:
         state (str):
         progress (float):
         started_at (Union[None, datetime.datetime]):
+        feedback (str):
     """
 
     state: str
     progress: float
     started_at: Union[None, datetime.datetime]
+    feedback: str
     additional_properties: Dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -33,6 +35,8 @@ class CharacterGenerationStatus:
         else:
             started_at = self.started_at
 
+        feedback = self.feedback
+
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update(
@@ -40,6 +44,7 @@ class CharacterGenerationStatus:
                 "state": state,
                 "progress": progress,
                 "started_at": started_at,
+                "feedback": feedback,
             }
         )
 
@@ -67,10 +72,13 @@ class CharacterGenerationStatus:
 
         started_at = _parse_started_at(d.pop("started_at"))
 
+        feedback = d.pop("feedback")
+
         character_generation_status = cls(
             state=state,
             progress=progress,
             started_at=started_at,
+            feedback=feedback,
         )
 
         character_generation_status.additional_properties = d
