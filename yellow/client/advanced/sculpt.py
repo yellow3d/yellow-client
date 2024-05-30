@@ -1,7 +1,7 @@
 import sys
 import json
 import re
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Iterable
 from pathlib import Path
 import shutil
 import time
@@ -14,9 +14,11 @@ from yellow.client.api.sculpt import (
     sculpt_characters_list,
     sculpt_characters_create,
     sculpt_characters_status_retrieve,
-    sculpt_characters_fetch_retrieve
+    sculpt_characters_fetch_retrieve,
+    sculpt_characters_feedback_create,
+    sculpt_characters_cancel_partial_update
 )
-from yellow.client.models import CharacterSpecRequest
+from yellow.client.models import CharacterSpecRequest, CharacterFeedbackRequest
 from yellow.client.models.gender_enum import GenderEnum
 from yellow.client.types import Response
 
@@ -36,24 +38,37 @@ class YellowSculpt:
     ):
         self.auth = auth
         self.api_client = auth.client
-    
-    def get_assets_list(self) -> List[Dict]:
+
+    def get_assets(self, **kwargs) -> Iterable[Dict]:
+        """Get list of the historical list of prompts and generations.
+
+        Yields:
+            Generator[Dict]: Description of generated assets
+        """
+        page = 1
+        while True:
+            response: Response = sculpt_characters_list.sync_detailed(
+                client=self.api_client, page=page, **kwargs
+            )
+            self.auth.raise_satus_error(response)
+            paginated_list = json.loads(response.content.decode())
+            yield from paginated_list["results"]
+            if not paginated_list["next"]:
+                break
+            page += 1
+
+    def get_assets_list(self, **kwargs) -> List[Dict]:
         """Get list of the historical list of prompts and generations.
 
         Returns:
             List[Dict]: List of descriptions of generated assets
         """
-        response: Response = sculpt_characters_list.sync_detailed(client=self.api_client)
-        print(response)
-        self.auth.raise_satus_error(response)
-        
-        assets_list = json.loads(response.content.decode()) 
-        return assets_list
-    
+        return list(self.get_assets(**kwargs))
+
     def print_assets_list(self):
         """Print list of the historical list of prompts and generations.
         """
-        assets_list = self.get_assets_list()
+        assets_list = self.get_assets()
         for asset in assets_list:
             print(asset)
             
@@ -126,6 +141,50 @@ class YellowSculpt:
 
             return json_respone        
         
+    def add_feedback(self, uuid: str, feedback: str) -> Dict:
+        """Add feedback for an asset.
+
+        Args:
+            uuid (str): UUID of an asset
+            
+        Raises:
+            ConnectionError: Error recevied from the Yellow API during checkign a job status
+
+        Returns:
+            Dict: Feedback
+        """
+        logger.info(f"Adding feedback for UUID: {uuid}")
+        request = CharacterFeedbackRequest(feedback, uuid)
+        response: Response = sculpt_characters_feedback_create.sync_detailed(
+            client=self.api_client, body=request,
+        )
+        self.auth.raise_satus_error(response)
+        
+        status_data = json.loads(response.content.decode())
+        return status_data
+
+    def cancel_generation(self, uuid: str) -> Dict:
+        """Cancel an asset generation process.
+
+        Args:
+            uuid (str): UUID of an asset
+            
+        Raises:
+            ConnectionError: Error recevied from the Yellow API during checkign a job status
+
+        Returns:
+            Dict: Cancellation status
+        """
+        logger.info(f"Canceling UUID: {uuid}")
+        response: Response = sculpt_characters_cancel_partial_update.sync_detailed(
+            client=self.api_client, 
+            generation_id=uuid,
+        )
+        self.auth.raise_satus_error(response)
+        
+        status_data = json.loads(response.content.decode())
+        return status_data
+
     def check_asset_status(self, uuid: str) -> Dict:
         """Check current status of an asset generation process.
 

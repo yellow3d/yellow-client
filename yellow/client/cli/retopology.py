@@ -8,7 +8,7 @@ from yellow.client import models, types
 from yellow.client.api.retopology import (
     retopology_characters_create_create, retopology_characters_fetch_retrieve,
     retopology_characters_list, retopology_characters_status_retrieve)
-from yellow.client.cli.common import host_option, token_option
+from yellow.client.cli.common import host_option, token_option, pagination_options
 from yellow.client.client import AuthenticatedClient
 
 FILENAME_PATTERN = re.compile(r'attachment; filename="([^"]+)"')
@@ -49,7 +49,7 @@ def create(ctx, host, token, file, gender, genesis):
     print(response.content.decode())
     return 0 if response.status_code == 200 else 1
 
-@retopology.command()
+@retopology.command(name="list")
 @click.option(
     "--state",
     multiple=True,
@@ -58,13 +58,12 @@ def create(ctx, host, token, file, gender, genesis):
 )
 @token_option
 @host_option
+@pagination_options
 @click.pass_context
-def list(ctx, host, token, state):
+def list(ctx, host, token, **kwargs):
     host = host or ctx.obj.get('HOST')
     with AuthenticatedClient(base_url=host, token=token) as client:
-        kwargs = {"client": client}
-        if state:
-            kwargs["state"] = state
+        kwargs["client"] = client
         response = retopology_characters_list.sync_detailed(**kwargs)
     print(response.content.decode())
     return 0 if response.status_code == 200 else 1
