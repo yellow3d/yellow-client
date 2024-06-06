@@ -6,7 +6,8 @@ from pathlib import Path
 import click
 
 from yellow.client import models
-from yellow.client.api.sculpt import (sculpt_characters_create,
+from yellow.client.api.sculpt import ( sculpt_characters_archive_partial_update,
+                                        sculpt_characters_create,
                                       sculpt_characters_fetch_retrieve,
                                       sculpt_characters_list,
                                       sculpt_characters_status_retrieve, sculpt_characters_cancel_partial_update, sculpt_characters_feedback_create)
@@ -84,7 +85,19 @@ def cancel(ctx, host, token, generation_id):
     print(response.content.decode())
     return 0 if response.status_code == 200 else 1
 
-sculpt_characters_feedback_create
+@sculpt.command(help=f"Archive generation with given UUID")
+@click.argument("generation_id", type=uuid.UUID)
+@token_option
+@host_option
+@click.pass_context
+def archive(ctx, host, token, generation_id):
+    host = host or ctx.obj.get('HOST')
+    with AuthenticatedClient(base_url=host, token=token) as client:
+        response = sculpt_characters_archive_partial_update.sync_detailed(
+            client=client, generation_id=generation_id,
+        )
+    print(response.content.decode())
+    return 0 if response.status_code == 200 else 1
 
 @sculpt.command(help=f"Submits a feedback for a character with given UUID")
 @click.argument("generation_id", type=uuid.UUID)

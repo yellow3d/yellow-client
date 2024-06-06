@@ -1,28 +1,25 @@
-import sys
 import json
-import re
-from typing import List, Optional, Dict, Iterable
-from pathlib import Path
-import shutil
-import time
 import logging
+import re
+import shutil
+import sys
+import time
+from pathlib import Path
+from typing import Dict, Iterable, List, Optional
 
 from tqdm import tqdm
 
 from yellow.client.advanced.auth import YellowAuthenticator
-from yellow.client.api.sculpt import (
-    sculpt_characters_list,
-    sculpt_characters_create,
-    sculpt_characters_status_retrieve,
-    sculpt_characters_fetch_retrieve,
-    sculpt_characters_feedback_create,
-    sculpt_characters_cancel_partial_update
-)
-from yellow.client.models import CharacterSpecRequest, CharacterFeedbackRequest
+from yellow.client.api.sculpt import (sculpt_characters_archive_partial_update,
+                                      sculpt_characters_cancel_partial_update,
+                                      sculpt_characters_create,
+                                      sculpt_characters_feedback_create,
+                                      sculpt_characters_fetch_retrieve,
+                                      sculpt_characters_list,
+                                      sculpt_characters_status_retrieve)
+from yellow.client.models import CharacterFeedbackRequest, CharacterSpecRequest
 from yellow.client.models.gender_enum import GenderEnum
 from yellow.client.types import Response
-
-
 
 logger = logging.getLogger("yellow-client")
 
@@ -182,6 +179,28 @@ class YellowSculpt:
         )
         self.auth.raise_satus_error(response)
         
+        status_data = json.loads(response.content.decode())
+        return status_data
+
+    def archive_generation(self, uuid: str) -> Dict:
+        """Archive a generation.
+
+        Args:
+            uuid (str): UUID of an asset
+
+        Raises:
+            ConnectionError: Error recevied from the Yellow API during checking a job status
+
+        Returns:
+            Dict: UUID of an asset
+        """
+        logger.info(f"Archiving UUID: {uuid}")
+        response: Response = sculpt_characters_archive_partial_update.sync_detailed(
+            client=self.api_client, 
+            generation_id=uuid,
+        )
+        self.auth.raise_satus_error(response)
+
         status_data = json.loads(response.content.decode())
         return status_data
 
