@@ -1,67 +1,53 @@
-from typing import Any, Dict, List, Type, TypeVar, Union
+from typing import Any, Dict, List, Type, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..models.gender_enum import GenderEnum
-from ..types import UNSET, Unset
-
-T = TypeVar("T", bound="CharacterSpec")
+T = TypeVar("T", bound="CharacterFeedback")
 
 
 @_attrs_define
-class CharacterSpec:
+class CharacterFeedback:
     """
     Attributes:
-        prompt (str):
-        gender (GenderEnum): * `male` - Male
-            * `female` - Female
-            * `neutral` - Neutral
-        n_variants (Union[Unset, int]):  Default: 2.
+        feedback (str):
+        uuid (str):
     """
 
-    prompt: str
-    gender: GenderEnum
-    n_variants: Union[Unset, int] = 2
+    feedback: str
+    uuid: str
     additional_properties: Dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
-        prompt = self.prompt
+        feedback = self.feedback
 
-        gender = self.gender.value
-
-        n_variants = self.n_variants
+        uuid = self.uuid
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update(
             {
-                "prompt": prompt,
-                "gender": gender,
+                "feedback": feedback,
+                "uuid": uuid,
             }
         )
-        if n_variants is not UNSET:
-            field_dict["n_variants"] = n_variants
 
         return field_dict
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
         d = src_dict.copy()
-        prompt = d.pop("prompt")
+        feedback = d.pop("feedback")
 
-        gender = GenderEnum(d.pop("gender"))
+        uuid = d.pop("uuid")
 
-        n_variants = d.pop("n_variants", UNSET)
-
-        character_spec = cls(
-            prompt=prompt,
-            gender=gender,
-            n_variants=n_variants,
+        character_feedback = cls(
+            feedback=feedback,
+            uuid=uuid,
         )
 
-        character_spec.additional_properties = d
-        return character_spec
+        character_feedback.additional_properties = d
+        return character_feedback
 
     @property
     def additional_keys(self) -> List[str]:

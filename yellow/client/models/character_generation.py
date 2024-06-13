@@ -1,7 +1,9 @@
-from typing import TYPE_CHECKING, Any, Dict, List, Type, TypeVar
+import datetime
+from typing import TYPE_CHECKING, Any, Dict, List, Type, TypeVar, Union, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
+from dateutil.parser import isoparse
 
 if TYPE_CHECKING:
     from ..models.character_spec import CharacterSpec
@@ -17,11 +19,13 @@ class CharacterGeneration:
         uuid (str):
         spec (CharacterSpec):
         state (str):
+        created_at (Union[None, datetime.datetime]):
     """
 
     uuid: str
     spec: "CharacterSpec"
     state: str
+    created_at: Union[None, datetime.datetime]
     additional_properties: Dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -31,6 +35,12 @@ class CharacterGeneration:
 
         state = self.state
 
+        created_at: Union[None, str]
+        if isinstance(self.created_at, datetime.datetime):
+            created_at = self.created_at.isoformat()
+        else:
+            created_at = self.created_at
+
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update(
@@ -38,6 +48,7 @@ class CharacterGeneration:
                 "uuid": uuid,
                 "spec": spec,
                 "state": state,
+                "created_at": created_at,
             }
         )
 
@@ -54,10 +65,26 @@ class CharacterGeneration:
 
         state = d.pop("state")
 
+        def _parse_created_at(data: object) -> Union[None, datetime.datetime]:
+            if data is None:
+                return data
+            try:
+                if not isinstance(data, str):
+                    raise TypeError()
+                created_at_type_0 = isoparse(data)
+
+                return created_at_type_0
+            except:  # noqa: E722
+                pass
+            return cast(Union[None, datetime.datetime], data)
+
+        created_at = _parse_created_at(d.pop("created_at"))
+
         character_generation = cls(
             uuid=uuid,
             spec=spec,
             state=state,
+            created_at=created_at,
         )
 
         character_generation.additional_properties = d

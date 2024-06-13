@@ -1,10 +1,10 @@
-from typing import Any, Dict, List, Type, TypeVar
+from typing import Any, Dict, List, Type, TypeVar, Union
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 from ..models.gender_enum import GenderEnum
-from ..types import Unset
+from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="CharacterSpecRequest")
 
@@ -17,16 +17,20 @@ class CharacterSpecRequest:
         gender (GenderEnum): * `male` - Male
             * `female` - Female
             * `neutral` - Neutral
+        n_variants (Union[Unset, int]):  Default: 2.
     """
 
     prompt: str
     gender: GenderEnum
+    n_variants: Union[Unset, int] = 2
     additional_properties: Dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
         prompt = self.prompt
 
         gender = self.gender.value
+
+        n_variants = self.n_variants
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -36,6 +40,8 @@ class CharacterSpecRequest:
                 "gender": gender,
             }
         )
+        if n_variants is not UNSET:
+            field_dict["n_variants"] = n_variants
 
         return field_dict
 
@@ -43,6 +49,12 @@ class CharacterSpecRequest:
         prompt = self.prompt if isinstance(self.prompt, Unset) else (None, str(self.prompt).encode(), "text/plain")
 
         gender = (None, str(self.gender.value).encode(), "text/plain")
+
+        n_variants = (
+            self.n_variants
+            if isinstance(self.n_variants, Unset)
+            else (None, str(self.n_variants).encode(), "text/plain")
+        )
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(
@@ -54,6 +66,8 @@ class CharacterSpecRequest:
                 "gender": gender,
             }
         )
+        if n_variants is not UNSET:
+            field_dict["n_variants"] = n_variants
 
         return field_dict
 
@@ -64,9 +78,12 @@ class CharacterSpecRequest:
 
         gender = GenderEnum(d.pop("gender"))
 
+        n_variants = d.pop("n_variants", UNSET)
+
         character_spec_request = cls(
             prompt=prompt,
             gender=gender,
+            n_variants=n_variants,
         )
 
         character_spec_request.additional_properties = d
