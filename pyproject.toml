@@ -1,0 +1,35 @@
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "yellow-client"
+version = "0.1.0"
+description = "A client library for accessing Yellow API"
+dependencies = [
+    "httpx>=0.20.0,<0.28.0",
+    "attrs>=21.3.0",
+    "python-dateutil~=2.8",
+    "click~=8.1",
+    "tqdm",
+]
+
+[project.optional-dependencies]
+vis = [
+    "trimesh",
+    "pyglet<2",
+    "scipy",
+]
+
+[project.scripts]
+yellow-cli = "yellow.client.cli:cli"
+
+[tool.hatch.build.targets.wheel]
+packages = ["yellow"]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["F", "I", "UP"]
