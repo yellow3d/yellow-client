@@ -17,6 +17,7 @@ dependencies = [
 
 [project.optional-dependencies]
 vis = [
+    "chardet",
     "trimesh",
     "pyglet<2",
     "scipy",

@@ -22,6 +22,8 @@ def _get_kwargs(
     params["file_format"] = json_file_format
 
     params["generation_id"] = generation_id
+    params["file_format"] = file_format
+    params["rig_type"] = rig_type
 
     json_rig_type = rig_type.value
     params["rig_type"] = json_rig_type
