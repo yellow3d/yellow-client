@@ -20,6 +20,7 @@ logging.getLogger('yellow-client').setLevel(logging.INFO)
 # auth = YellowAuthenticator.auth_with_token(token=TOKEN)
 
 # or authentiacate using token stored under OS env variable YELLOW_TOKEN
+# os.environ["YELLOW_TOKEN"] = "<token>"
 auth = YellowAuthenticator()
 
 sculpt = YellowSculpt(auth=auth)
