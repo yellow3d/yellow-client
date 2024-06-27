@@ -6,6 +6,8 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...types import UNSET, Response
+from ...models.file_format_enum import FileFormatEnum
+from ...models.rig_type_enum import RigTypeEnum
 
 
 def _get_kwargs(
@@ -57,8 +59,8 @@ def sync_detailed(
     *,
     client: AuthenticatedClient,
     generation_id: str,
-    file_format: str = "obj",
-    rig_type: str = "no-rig",
+    file_format: str = FileFormatEnum.OBJ,
+    rig_type: str = RigTypeEnum.NO_RIG,
 ) -> Response[Any]:
     """Fetches the generated character.
 
@@ -92,8 +94,8 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient,
     generation_id: str,
-    file_format: str = "obj",
-    rig_type: str = "no-rig",
+    file_format: str = FileFormatEnum.OBJ,
+    rig_type: str = RigTypeEnum.NO_RIG,
 ) -> Response[Any]:
     """Fetches the generated character.
 
