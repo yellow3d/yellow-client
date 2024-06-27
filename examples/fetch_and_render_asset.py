@@ -20,7 +20,6 @@ logging.getLogger('yellow-client').setLevel(logging.INFO)
 # auth = YellowAuthenticator.auth_with_token(token=TOKEN)
 
 # or authentiacate using token stored under OS env variable YELLOW_TOKEN
-# os.environ["YELLOW_TOKEN"] = "<token>"
 auth = YellowAuthenticator()
 
 sculpt = YellowSculpt(auth=auth)
@@ -41,8 +40,22 @@ for asset in assets_list:
 # get the last asset from the list
 uuid = assets_list[-1]["uuid"]
     
-# fetch the asset
-zip_path = sculpt.fetch_asset(uuid, "demo_output")
+# fetch the asset in fbx format
+sculpt.fetch_asset(
+    uuid=uuid, 
+    output_dir="output_to_fbx", 
+    file_format="fbx", 
+    rig_type="blender-basic-human-metarig"
+)
 
-# show the asset
+
+# fetch the asset in obj format
+zip_path = sculpt.fetch_asset(
+    uuid=uuid, 
+    output_dir="output_to_obj", 
+    file_format="obj", 
+    rig_type="no-rig"
+)
+
+# show the asset (only .obj is supported)
 sculpt.show_asset(zip_path)
