@@ -154,8 +154,8 @@ class YellowSculpt:
             self, 
             uuid: str, 
             output_dir: str, 
-            file_format: str = "obj",
-            rig_type: str = "no-rig",
+            file_format: str = FileFormatEnum.OBJ,
+            rig_type: str = RigTypeEnum.NO_RIG,
         )-> str:
         """Fetch/download an generated asset.
 
