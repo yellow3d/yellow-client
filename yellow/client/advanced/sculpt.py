@@ -171,19 +171,9 @@ class YellowSculpt:
         Returns:
             str: Output path
         """
-        try:
-            file_format = FileFormatEnum(file_format)
-        except ValueError:
-            raise ValueError(
-                f"Select file format from the list: {', '.join(enum.value for enum in FileFormatEnum)}"
-            )
 
-        try:
-            rig_type = RigTypeEnum(rig_type)
-        except ValueError:
-            raise ValueError(
-                f"Select rig type from the list: {', '.join(enum.value for enum in RigTypeEnum)}"
-            )
+        file_format = FileFormatEnum(file_format)
+        rig_type = RigTypeEnum(rig_type)
 
         logger.info(f"Checking status of UUID: {uuid}")
         response: Response = sculpt_characters_status_retrieve.sync_detailed(
