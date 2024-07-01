@@ -18,6 +18,8 @@ from yellow.client.api.sculpt import (
 )
 from yellow.client.models import CharacterSpecRequest
 from yellow.client.models.gender_enum import GenderEnum
+from yellow.client.models.file_format_enum import FileFormatEnum
+from yellow.client.models.rig_type_enum import RigTypeEnum
 from yellow.client.types import Response
 
 
@@ -148,12 +150,20 @@ class YellowSculpt:
         status_data = json.loads(response.content.decode())
         return status_data     
     
-    def fetch_asset(self, uuid: str, output_dir: str) -> str:
+    def fetch_asset(
+            self, 
+            uuid: str, 
+            output_dir: str, 
+            file_format: str = FileFormatEnum.OBJ,
+            rig_type: str = RigTypeEnum.NO_RIG,
+        )-> str:
         """Fetch/download an generated asset.
 
         Args:
             uuid (str): UUID of an asset
             output_dir (str): Directory to store an asset
+            file_format (str): File format of an asset
+            rig_type (str): Rig type applied to a mesh
 
         Raises:
             ValueError: Error recevied from the Yellow API during fetching an asset
@@ -161,6 +171,10 @@ class YellowSculpt:
         Returns:
             str: Output path
         """
+
+        file_format = FileFormatEnum(file_format)
+        rig_type = RigTypeEnum(rig_type)
+
         logger.info(f"Checking status of UUID: {uuid}")
         response: Response = sculpt_characters_status_retrieve.sync_detailed(
             client=self.api_client, 
@@ -176,6 +190,8 @@ class YellowSculpt:
             response: Response = sculpt_characters_fetch_retrieve.sync_detailed(
                 client=self.api_client, 
                 generation_id=uuid,
+                file_format=file_format,
+                rig_type=rig_type,
             )
             self.auth.raise_satus_error(response)
 
@@ -229,6 +245,10 @@ class YellowSculpt:
                 shutil.unpack_archive(zip_path, zip_dst_dir)
                 logger.info(f"Zip file {zip_path} extracted to {zip_dst_dir}")
                 obj_paths.append(zip_dst_dir / model_name)
+        
+        if len(uuid_obj_paths := list(dst_dir.glob("*.obj"))) > 0:
+            for obj_path in uuid_obj_paths:
+                obj_paths.append(obj_path)
                 
         for obj_path in obj_paths:
             geometry = trimesh.load(obj_path)
