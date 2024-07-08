@@ -6,15 +6,21 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...types import UNSET, Response
+from ...models.file_format_enum import FileFormatEnum
+from ...models.rig_type_enum import RigTypeEnum
 
 
 def _get_kwargs(
     *,
     generation_id: str,
+    file_format: str,
+    rig_type: str,
 ) -> Dict[str, Any]:
     params: Dict[str, Any] = {}
 
     params["generation_id"] = generation_id
+    params["file_format"] = file_format
+    params["rig_type"] = rig_type
 
     params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
@@ -53,11 +59,15 @@ def sync_detailed(
     *,
     client: AuthenticatedClient,
     generation_id: str,
+    file_format: str = FileFormatEnum.OBJ,
+    rig_type: str = RigTypeEnum.NO_RIG,
 ) -> Response[Any]:
     """Fetches the generated character.
 
     Args:
         generation_id (str):
+        file_format (str):
+        rig_type (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -69,6 +79,8 @@ def sync_detailed(
 
     kwargs = _get_kwargs(
         generation_id=generation_id,
+        file_format=file_format,
+        rig_type=rig_type,
     )
 
     response = client.get_httpx_client().request(
@@ -82,11 +94,15 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient,
     generation_id: str,
+    file_format: str = FileFormatEnum.OBJ,
+    rig_type: str = RigTypeEnum.NO_RIG,
 ) -> Response[Any]:
     """Fetches the generated character.
 
     Args:
         generation_id (str):
+        file_format (str):
+        rig_type (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -98,6 +114,8 @@ async def asyncio_detailed(
 
     kwargs = _get_kwargs(
         generation_id=generation_id,
+        file_format=file_format,
+        rig_type=rig_type,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)

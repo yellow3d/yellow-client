@@ -4,6 +4,8 @@ import logging
 
 from yellow.client.advanced.auth import YellowAuthenticator
 from yellow.client.advanced.sculpt import YellowSculpt
+from yellow.client.models.file_format_enum import FileFormatEnum
+from yellow.client.models.rig_type_enum import RigTypeEnum
 
 
 # configure logging
@@ -41,8 +43,22 @@ for asset in assets_list:
 # get the last asset from the list
 uuid = assets_list[-1]["uuid"]
     
-# fetch the asset
-zip_path = sculpt.fetch_asset(uuid, "demo_output")
+# fetch the asset in fbx format
+sculpt.fetch_asset(
+    uuid=uuid, 
+    output_dir="output_to_fbx", 
+    file_format=FileFormatEnum.FBX, 
+    rig_type=RigTypeEnum.BLENDER_BASIC_HUMAN_METARIG
+)
 
-# show the asset
+
+# fetch the asset in obj format
+zip_path = sculpt.fetch_asset(
+    uuid=uuid, 
+    output_dir="output_to_obj", 
+    file_format=FileFormatEnum.OBJ, 
+    rig_type=RigTypeEnum.NO_RIG
+)
+
+# show the asset (only .obj is supported)
 sculpt.show_asset(zip_path)
