@@ -64,7 +64,7 @@ PASSWORD="<password>"
 auth = YellowAuthenticator.auth_with_account(username=USERNAME, password=PASSWORD)
 ```
 
-or authentiacate using token:
+or authenticate using token:
 ```python
 from yellow.client.advanced.auth import YellowAuthenticator
 TOKEN = "<token>"

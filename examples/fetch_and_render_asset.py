@@ -8,6 +8,7 @@ from yellow.client.models.sculpt_characters_fetch_retrieve_file_format import Sc
 from yellow.client.models.sculpt_characters_fetch_retrieve_rig_type import SculptCharactersFetchRetrieveRigType
 from yellow.client.models.sculpt_characters_list_state_item import SculptCharactersListStateItem
 
+
 # configure logging
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s')
 logging.getLogger('yellow-client').setLevel(logging.INFO)  

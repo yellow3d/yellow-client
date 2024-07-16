@@ -8,6 +8,8 @@ from ...client import AuthenticatedClient, Client
 from ...models.sculpt_characters_fetch_retrieve_file_format import SculptCharactersFetchRetrieveFileFormat
 from ...models.sculpt_characters_fetch_retrieve_rig_type import SculptCharactersFetchRetrieveRigType
 from ...types import UNSET, Response
+from ...models.file_format_enum import FileFormatEnum
+from ...models.rig_type_enum import RigTypeEnum
 
 
 def _get_kwargs(
@@ -27,6 +29,7 @@ def _get_kwargs(
 
     json_rig_type = rig_type.value
     params["rig_type"] = json_rig_type
+
 
     params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
