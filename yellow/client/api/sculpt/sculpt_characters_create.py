@@ -13,11 +13,7 @@ from ...types import Response
 
 def _get_kwargs(
     *,
-    body: Union[
-        CharacterSpecRequest,
-        CharacterSpecRequest,
-        CharacterSpecRequest,
-    ],
+    body: CharacterSpecRequest,
 ) -> Dict[str, Any]:
     headers: Dict[str, Any] = {}
 
@@ -26,21 +22,10 @@ def _get_kwargs(
         "url": "/api/sculpt/characters",
     }
 
-    if isinstance(body, CharacterSpecRequest):
-        _json_body = body.to_dict()
+    _json_body = body.to_dict()
 
-        _kwargs["json"] = _json_body
-        headers["Content-Type"] = "application/json"
-    if isinstance(body, CharacterSpecRequest):
-        _data_body = body.to_dict()
-
-        _kwargs["data"] = _data_body
-        headers["Content-Type"] = "application/x-www-form-urlencoded"
-    if isinstance(body, CharacterSpecRequest):
-        _files_body = body.to_multipart()
-
-        _kwargs["files"] = _files_body
-        headers["Content-Type"] = "multipart/form-data"
+    _kwargs["json"] = _json_body
+    headers["Content-Type"] = "application/json"
 
     _kwargs["headers"] = headers
     return _kwargs
@@ -81,17 +66,11 @@ def _build_response(
 def sync_detailed(
     *,
     client: AuthenticatedClient,
-    body: Union[
-        CharacterSpecRequest,
-        CharacterSpecRequest,
-        CharacterSpecRequest,
-    ],
+    body: CharacterSpecRequest,
 ) -> Response[Union[ErrorMessage, UUID]]:
     """Launches generation of a new character.
 
     Args:
-        body (CharacterSpecRequest):
-        body (CharacterSpecRequest):
         body (CharacterSpecRequest):
 
     Raises:
@@ -116,17 +95,11 @@ def sync_detailed(
 def sync(
     *,
     client: AuthenticatedClient,
-    body: Union[
-        CharacterSpecRequest,
-        CharacterSpecRequest,
-        CharacterSpecRequest,
-    ],
+    body: CharacterSpecRequest,
 ) -> Optional[Union[ErrorMessage, UUID]]:
     """Launches generation of a new character.
 
     Args:
-        body (CharacterSpecRequest):
-        body (CharacterSpecRequest):
         body (CharacterSpecRequest):
 
     Raises:
@@ -146,17 +119,11 @@ def sync(
 async def asyncio_detailed(
     *,
     client: AuthenticatedClient,
-    body: Union[
-        CharacterSpecRequest,
-        CharacterSpecRequest,
-        CharacterSpecRequest,
-    ],
+    body: CharacterSpecRequest,
 ) -> Response[Union[ErrorMessage, UUID]]:
     """Launches generation of a new character.
 
     Args:
-        body (CharacterSpecRequest):
-        body (CharacterSpecRequest):
         body (CharacterSpecRequest):
 
     Raises:
@@ -179,17 +146,11 @@ async def asyncio_detailed(
 async def asyncio(
     *,
     client: AuthenticatedClient,
-    body: Union[
-        CharacterSpecRequest,
-        CharacterSpecRequest,
-        CharacterSpecRequest,
-    ],
+    body: CharacterSpecRequest,
 ) -> Optional[Union[ErrorMessage, UUID]]:
     """Launches generation of a new character.
 
     Args:
-        body (CharacterSpecRequest):
-        body (CharacterSpecRequest):
         body (CharacterSpecRequest):
 
     Raises:
