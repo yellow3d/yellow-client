@@ -6,6 +6,7 @@ from yellow.client.advanced.auth import YellowAuthenticator
 from yellow.client.advanced.sculpt import YellowSculpt
 from yellow.client.models.sculpt_characters_fetch_retrieve_file_format import SculptCharactersFetchRetrieveFileFormat
 from yellow.client.models.sculpt_characters_fetch_retrieve_rig_type import SculptCharactersFetchRetrieveRigType
+from yellow.client.models.sculpt_characters_list_state_item import SculptCharactersListStateItem
 
 # configure logging
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s')
@@ -27,20 +28,20 @@ auth = YellowAuthenticator()
 sculpt = YellowSculpt(auth=auth)
 
 # get a list of assets assigned to the account
-assets_list = sculpt.get_assets_list()
+assets_list = sculpt.get_latest_k_assets(
+    k=10,
+    state=[SculptCharactersListStateItem.COMPLETED]
+)
 
 if len(assets_list) == 0:
     raise ValueError("Not found asset")
-
-# filter only assets with status "completed"
-assets_list = [a for a in assets_list if a["state"] == "completed"]
 
 print("Listing assets:")
 for asset in assets_list:
     print(asset)
 
-# get the last asset from the list
-uuid = assets_list[-1]["uuid"]
+# get the newest asset from the list
+uuid = assets_list[0]["uuid"]
     
 # fetch the asset in fbx format
 sculpt.fetch_asset(

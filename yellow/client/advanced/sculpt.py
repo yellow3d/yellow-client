@@ -56,6 +56,22 @@ class YellowSculpt:
                 break
             page += 1
 
+    def get_latest_k_assets(self, k: int = 10, **kwargs) -> Iterable[Dict]:
+        """Get list of latest k historical prompts and generations.
+
+        Args:
+            k (int): Numer of latest generations to return.
+
+        Returns:
+            List[Dict]: List of k latest descriptions of generated assets
+        """
+        response: Response = sculpt_characters_list.sync_detailed(
+            client=self.api_client, page=1, page_size=k, **kwargs
+        )
+        self.auth.raise_satus_error(response)
+        paginated_list = json.loads(response.content.decode())
+        return paginated_list["results"]
+
     def get_assets_list(self, **kwargs) -> List[Dict]:
         """Get list of the historical list of prompts and generations.
 
