@@ -13,7 +13,11 @@ from ...types import Response
 
 def _get_kwargs(
     *,
-    body: CharacterFeedbackRequest,
+    body: Union[
+        CharacterFeedbackRequest,
+        CharacterFeedbackRequest,
+        CharacterFeedbackRequest,
+    ],
 ) -> Dict[str, Any]:
     headers: Dict[str, Any] = {}
 
@@ -22,10 +26,21 @@ def _get_kwargs(
         "url": "/api/sculpt/characters/feedback",
     }
 
-    _json_body = body.to_dict()
+    if isinstance(body, CharacterFeedbackRequest):
+        _json_body = body.to_dict()
 
-    _kwargs["json"] = _json_body
-    headers["Content-Type"] = "application/json"
+        _kwargs["json"] = _json_body
+        headers["Content-Type"] = "application/json"
+    if isinstance(body, CharacterFeedbackRequest):
+        _data_body = body.to_dict()
+
+        _kwargs["data"] = _data_body
+        headers["Content-Type"] = "application/x-www-form-urlencoded"
+    if isinstance(body, CharacterFeedbackRequest):
+        _files_body = body.to_multipart()
+
+        _kwargs["files"] = _files_body
+        headers["Content-Type"] = "multipart/form-data"
 
     _kwargs["headers"] = headers
     return _kwargs

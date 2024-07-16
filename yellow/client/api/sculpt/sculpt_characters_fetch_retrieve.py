@@ -5,16 +5,26 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.sculpt_characters_fetch_retrieve_file_format import SculptCharactersFetchRetrieveFileFormat
+from ...models.sculpt_characters_fetch_retrieve_rig_type import SculptCharactersFetchRetrieveRigType
 from ...types import UNSET, Response
 
 
 def _get_kwargs(
     *,
+    file_format: SculptCharactersFetchRetrieveFileFormat,
     generation_id: str,
+    rig_type: SculptCharactersFetchRetrieveRigType,
 ) -> Dict[str, Any]:
     params: Dict[str, Any] = {}
 
+    json_file_format = file_format.value
+    params["file_format"] = json_file_format
+
     params["generation_id"] = generation_id
+
+    json_rig_type = rig_type.value
+    params["rig_type"] = json_rig_type
 
     params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
@@ -52,12 +62,16 @@ def _build_response(*, client: Union[AuthenticatedClient, Client], response: htt
 def sync_detailed(
     *,
     client: AuthenticatedClient,
+    file_format: SculptCharactersFetchRetrieveFileFormat,
     generation_id: str,
+    rig_type: SculptCharactersFetchRetrieveRigType,
 ) -> Response[Any]:
     """Fetches the generated character.
 
     Args:
+        file_format (SculptCharactersFetchRetrieveFileFormat):
         generation_id (str):
+        rig_type (SculptCharactersFetchRetrieveRigType):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -68,7 +82,9 @@ def sync_detailed(
     """
 
     kwargs = _get_kwargs(
+        file_format=file_format,
         generation_id=generation_id,
+        rig_type=rig_type,
     )
 
     response = client.get_httpx_client().request(
@@ -81,12 +97,16 @@ def sync_detailed(
 async def asyncio_detailed(
     *,
     client: AuthenticatedClient,
+    file_format: SculptCharactersFetchRetrieveFileFormat,
     generation_id: str,
+    rig_type: SculptCharactersFetchRetrieveRigType,
 ) -> Response[Any]:
     """Fetches the generated character.
 
     Args:
+        file_format (SculptCharactersFetchRetrieveFileFormat):
         generation_id (str):
+        rig_type (SculptCharactersFetchRetrieveRigType):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -97,7 +117,9 @@ async def asyncio_detailed(
     """
 
     kwargs = _get_kwargs(
+        file_format=file_format,
         generation_id=generation_id,
+        rig_type=rig_type,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)

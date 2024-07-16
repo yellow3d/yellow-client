@@ -70,7 +70,7 @@ def sync_detailed(
     client: AuthenticatedClient,
     generation_id: str,
 ) -> Response[Union[ErrorMessage, UUID]]:
-    """Cancels the generation.
+    """Cancels a running generation.
 
     Args:
         generation_id (str):
@@ -99,7 +99,7 @@ def sync(
     client: AuthenticatedClient,
     generation_id: str,
 ) -> Optional[Union[ErrorMessage, UUID]]:
-    """Cancels the generation.
+    """Cancels a running generation.
 
     Args:
         generation_id (str):
@@ -123,7 +123,7 @@ async def asyncio_detailed(
     client: AuthenticatedClient,
     generation_id: str,
 ) -> Response[Union[ErrorMessage, UUID]]:
-    """Cancels the generation.
+    """Cancels a running generation.
 
     Args:
         generation_id (str):
@@ -150,7 +150,7 @@ async def asyncio(
     client: AuthenticatedClient,
     generation_id: str,
 ) -> Optional[Union[ErrorMessage, UUID]]:
-    """Cancels the generation.
+    """Cancels a running generation.
 
     Args:
         generation_id (str):

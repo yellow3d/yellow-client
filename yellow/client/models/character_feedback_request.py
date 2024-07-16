@@ -3,8 +3,6 @@ from typing import Any, Dict, List, Type, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..types import Unset
-
 T = TypeVar("T", bound="CharacterFeedbackRequest")
 
 
@@ -37,16 +35,14 @@ class CharacterFeedbackRequest:
         return field_dict
 
     def to_multipart(self) -> Dict[str, Any]:
-        feedback = (
-            self.feedback if isinstance(self.feedback, Unset) else (None, str(self.feedback).encode(), "text/plain")
-        )
+        feedback = (None, str(self.feedback).encode(), "text/plain")
 
-        uuid = self.uuid if isinstance(self.uuid, Unset) else (None, str(self.uuid).encode(), "text/plain")
+        uuid = (None, str(self.uuid).encode(), "text/plain")
 
         field_dict: Dict[str, Any] = {}
-        field_dict.update(
-            {key: (None, str(value).encode(), "text/plain") for key, value in self.additional_properties.items()}
-        )
+        for prop_name, prop in self.additional_properties.items():
+            field_dict[prop_name] = (None, str(prop).encode(), "text/plain")
+
         field_dict.update(
             {
                 "feedback": feedback,

@@ -8,7 +8,6 @@ from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.error_message import ErrorMessage
 from ...models.paginated_character_generation_list import PaginatedCharacterGenerationList
-from ...models.sculpt_characters_list_gender_item import SculptCharactersListGenderItem
 from ...models.sculpt_characters_list_state_item import SculptCharactersListStateItem
 from ...types import UNSET, Response, Unset
 
@@ -16,7 +15,6 @@ from ...types import UNSET, Response, Unset
 def _get_kwargs(
     *,
     end_date: Union[Unset, datetime.date] = UNSET,
-    gender: Union[Unset, List[SculptCharactersListGenderItem]] = UNSET,
     page: Union[Unset, int] = UNSET,
     page_size: Union[Unset, int] = UNSET,
     start_date: Union[Unset, datetime.date] = UNSET,
@@ -28,15 +26,6 @@ def _get_kwargs(
     if not isinstance(end_date, Unset):
         json_end_date = end_date.isoformat()
     params["end_date"] = json_end_date
-
-    json_gender: Union[Unset, List[str]] = UNSET
-    if not isinstance(gender, Unset):
-        json_gender = []
-        for gender_item_data in gender:
-            gender_item = gender_item_data.value
-            json_gender.append(gender_item)
-
-    params["gender"] = json_gender
 
     params["page"] = page
 
@@ -103,7 +92,6 @@ def sync_detailed(
     *,
     client: AuthenticatedClient,
     end_date: Union[Unset, datetime.date] = UNSET,
-    gender: Union[Unset, List[SculptCharactersListGenderItem]] = UNSET,
     page: Union[Unset, int] = UNSET,
     page_size: Union[Unset, int] = UNSET,
     start_date: Union[Unset, datetime.date] = UNSET,
@@ -113,7 +101,6 @@ def sync_detailed(
 
     Args:
         end_date (Union[Unset, datetime.date]):
-        gender (Union[Unset, List[SculptCharactersListGenderItem]]):
         page (Union[Unset, int]):
         page_size (Union[Unset, int]):
         start_date (Union[Unset, datetime.date]):
@@ -129,7 +116,6 @@ def sync_detailed(
 
     kwargs = _get_kwargs(
         end_date=end_date,
-        gender=gender,
         page=page,
         page_size=page_size,
         start_date=start_date,
@@ -147,7 +133,6 @@ def sync(
     *,
     client: AuthenticatedClient,
     end_date: Union[Unset, datetime.date] = UNSET,
-    gender: Union[Unset, List[SculptCharactersListGenderItem]] = UNSET,
     page: Union[Unset, int] = UNSET,
     page_size: Union[Unset, int] = UNSET,
     start_date: Union[Unset, datetime.date] = UNSET,
@@ -157,7 +142,6 @@ def sync(
 
     Args:
         end_date (Union[Unset, datetime.date]):
-        gender (Union[Unset, List[SculptCharactersListGenderItem]]):
         page (Union[Unset, int]):
         page_size (Union[Unset, int]):
         start_date (Union[Unset, datetime.date]):
@@ -174,7 +158,6 @@ def sync(
     return sync_detailed(
         client=client,
         end_date=end_date,
-        gender=gender,
         page=page,
         page_size=page_size,
         start_date=start_date,
@@ -186,7 +169,6 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient,
     end_date: Union[Unset, datetime.date] = UNSET,
-    gender: Union[Unset, List[SculptCharactersListGenderItem]] = UNSET,
     page: Union[Unset, int] = UNSET,
     page_size: Union[Unset, int] = UNSET,
     start_date: Union[Unset, datetime.date] = UNSET,
@@ -196,7 +178,6 @@ async def asyncio_detailed(
 
     Args:
         end_date (Union[Unset, datetime.date]):
-        gender (Union[Unset, List[SculptCharactersListGenderItem]]):
         page (Union[Unset, int]):
         page_size (Union[Unset, int]):
         start_date (Union[Unset, datetime.date]):
@@ -212,7 +193,6 @@ async def asyncio_detailed(
 
     kwargs = _get_kwargs(
         end_date=end_date,
-        gender=gender,
         page=page,
         page_size=page_size,
         start_date=start_date,
@@ -228,7 +208,6 @@ async def asyncio(
     *,
     client: AuthenticatedClient,
     end_date: Union[Unset, datetime.date] = UNSET,
-    gender: Union[Unset, List[SculptCharactersListGenderItem]] = UNSET,
     page: Union[Unset, int] = UNSET,
     page_size: Union[Unset, int] = UNSET,
     start_date: Union[Unset, datetime.date] = UNSET,
@@ -238,7 +217,6 @@ async def asyncio(
 
     Args:
         end_date (Union[Unset, datetime.date]):
-        gender (Union[Unset, List[SculptCharactersListGenderItem]]):
         page (Union[Unset, int]):
         page_size (Union[Unset, int]):
         start_date (Union[Unset, datetime.date]):
@@ -256,7 +234,6 @@ async def asyncio(
         await asyncio_detailed(
             client=client,
             end_date=end_date,
-            gender=gender,
             page=page,
             page_size=page_size,
             start_date=start_date,

@@ -46,7 +46,7 @@ class CharacterSpecRequest:
         return field_dict
 
     def to_multipart(self) -> Dict[str, Any]:
-        prompt = self.prompt if isinstance(self.prompt, Unset) else (None, str(self.prompt).encode(), "text/plain")
+        prompt = (None, str(self.prompt).encode(), "text/plain")
 
         gender = (None, str(self.gender.value).encode(), "text/plain")
 
@@ -57,9 +57,9 @@ class CharacterSpecRequest:
         )
 
         field_dict: Dict[str, Any] = {}
-        field_dict.update(
-            {key: (None, str(value).encode(), "text/plain") for key, value in self.additional_properties.items()}
-        )
+        for prop_name, prop in self.additional_properties.items():
+            field_dict[prop_name] = (None, str(prop).encode(), "text/plain")
+
         field_dict.update(
             {
                 "prompt": prompt,
