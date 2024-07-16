@@ -19,8 +19,8 @@ from yellow.client.api.sculpt import (sculpt_characters_archive_partial_update,
                                       sculpt_characters_status_retrieve)
 from yellow.client.models import CharacterFeedbackRequest, CharacterSpecRequest
 from yellow.client.models.gender_enum import GenderEnum
-from yellow.client.models.file_format_enum import FileFormatEnum
-from yellow.client.models.rig_type_enum import RigTypeEnum
+from yellow.client.models.sculpt_characters_fetch_retrieve_file_format import SculptCharactersFetchRetrieveFileFormat
+from yellow.client.models.sculpt_characters_fetch_retrieve_rig_type import SculptCharactersFetchRetrieveRigType
 from yellow.client.types import Response
 
 logger = logging.getLogger("yellow-client")
@@ -232,8 +232,8 @@ class YellowSculpt:
             self, 
             uuid: str, 
             output_dir: str, 
-            file_format: str = FileFormatEnum.OBJ,
-            rig_type: str = RigTypeEnum.NO_RIG,
+            file_format: str = SculptCharactersFetchRetrieveFileFormat.OBJ,
+            rig_type: str = SculptCharactersFetchRetrieveRigType.NO_RIG,
         )-> str:
         """Fetch/download an generated asset.
 
@@ -250,8 +250,8 @@ class YellowSculpt:
             str: Output path
         """
 
-        file_format = FileFormatEnum(file_format)
-        rig_type = RigTypeEnum(rig_type)
+        file_format = SculptCharactersFetchRetrieveFileFormat(file_format)
+        rig_type = SculptCharactersFetchRetrieveRigType(rig_type)
 
         logger.info(f"Checking status of UUID: {uuid}")
         response: Response = sculpt_characters_status_retrieve.sync_detailed(
