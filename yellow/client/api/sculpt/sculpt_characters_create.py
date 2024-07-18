@@ -66,17 +66,11 @@ def _build_response(
 def sync_detailed(
     *,
     client: AuthenticatedClient,
-    body: Union[
-        CharacterSpecRequest,
-        CharacterSpecRequest,
-        CharacterSpecRequest,
-    ],
+    body: CharacterSpecRequest,
 ) -> Response[Union[ErrorMessage, UUID]]:
     """Launches generation of a new character.
 
     Args:
-        body (CharacterSpecRequest):
-        body (CharacterSpecRequest):
         body (CharacterSpecRequest):
 
     Raises:
@@ -101,17 +95,11 @@ def sync_detailed(
 def sync(
     *,
     client: AuthenticatedClient,
-    body: Union[
-        CharacterSpecRequest,
-        CharacterSpecRequest,
-        CharacterSpecRequest,
-    ],
+    body: CharacterSpecRequest,
 ) -> Optional[Union[ErrorMessage, UUID]]:
     """Launches generation of a new character.
 
     Args:
-        body (CharacterSpecRequest):
-        body (CharacterSpecRequest):
         body (CharacterSpecRequest):
 
     Raises:
@@ -131,17 +119,11 @@ def sync(
 async def asyncio_detailed(
     *,
     client: AuthenticatedClient,
-    body: Union[
-        CharacterSpecRequest,
-        CharacterSpecRequest,
-        CharacterSpecRequest,
-    ],
+    body: CharacterSpecRequest,
 ) -> Response[Union[ErrorMessage, UUID]]:
     """Launches generation of a new character.
 
     Args:
-        body (CharacterSpecRequest):
-        body (CharacterSpecRequest):
         body (CharacterSpecRequest):
 
     Raises:
@@ -164,17 +146,11 @@ async def asyncio_detailed(
 async def asyncio(
     *,
     client: AuthenticatedClient,
-    body: Union[
-        CharacterSpecRequest,
-        CharacterSpecRequest,
-        CharacterSpecRequest,
-    ],
+    body: CharacterSpecRequest,
 ) -> Optional[Union[ErrorMessage, UUID]]:
     """Launches generation of a new character.
 
     Args:
-        body (CharacterSpecRequest):
-        body (CharacterSpecRequest):
         body (CharacterSpecRequest):
 
     Raises:

@@ -5,24 +5,28 @@ from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 from dateutil.parser import isoparse
 
-T = TypeVar("T", bound="CharacterRetopologyGenerationStatus")
+T = TypeVar("T", bound="CharacterVariantGenerationStatus")
 
 
 @_attrs_define
-class CharacterRetopologyGenerationStatus:
+class CharacterVariantGenerationStatus:
     """
     Attributes:
+        uuid (str):
         state (str):
         progress (float):
         started_at (Union[None, datetime.datetime]):
     """
 
+    uuid: str
     state: str
     progress: float
     started_at: Union[None, datetime.datetime]
     additional_properties: Dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
+        uuid = self.uuid
+
         state = self.state
 
         progress = self.progress
@@ -37,6 +41,7 @@ class CharacterRetopologyGenerationStatus:
         field_dict.update(self.additional_properties)
         field_dict.update(
             {
+                "uuid": uuid,
                 "state": state,
                 "progress": progress,
                 "started_at": started_at,
@@ -48,6 +53,8 @@ class CharacterRetopologyGenerationStatus:
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
         d = src_dict.copy()
+        uuid = d.pop("uuid")
+
         state = d.pop("state")
 
         progress = d.pop("progress")
@@ -67,14 +74,15 @@ class CharacterRetopologyGenerationStatus:
 
         started_at = _parse_started_at(d.pop("started_at"))
 
-        character_retopology_generation_status = cls(
+        character_variant_generation_status = cls(
+            uuid=uuid,
             state=state,
             progress=progress,
             started_at=started_at,
         )
 
-        character_retopology_generation_status.additional_properties = d
-        return character_retopology_generation_status
+        character_variant_generation_status.additional_properties = d
+        return character_variant_generation_status
 
     @property
     def additional_keys(self) -> List[str]:

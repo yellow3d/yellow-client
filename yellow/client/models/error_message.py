@@ -32,7 +32,7 @@ class ErrorMessage:
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
         d = src_dict.copy()
-        detail = d.pop("detail", "")
+        detail = d.pop("detail")
 
         error_message = cls(
             detail=detail,

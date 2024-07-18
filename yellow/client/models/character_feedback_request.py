@@ -3,32 +3,50 @@ from typing import Any, Dict, List, Type, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="CharacterRetopology")
+T = TypeVar("T", bound="CharacterFeedbackRequest")
 
 
 @_attrs_define
-class CharacterRetopology:
+class CharacterFeedbackRequest:
     """
     Attributes:
+        feedback (str):
         uuid (str):
-        state (str):
     """
 
+    feedback: str
     uuid: str
-    state: str
     additional_properties: Dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
-        uuid = self.uuid
+        feedback = self.feedback
 
-        state = self.state
+        uuid = self.uuid
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update(
             {
+                "feedback": feedback,
                 "uuid": uuid,
-                "state": state,
+            }
+        )
+
+        return field_dict
+
+    def to_multipart(self) -> Dict[str, Any]:
+        feedback = (None, str(self.feedback).encode(), "text/plain")
+
+        uuid = (None, str(self.uuid).encode(), "text/plain")
+
+        field_dict: Dict[str, Any] = {}
+        for prop_name, prop in self.additional_properties.items():
+            field_dict[prop_name] = (None, str(prop).encode(), "text/plain")
+
+        field_dict.update(
+            {
+                "feedback": feedback,
+                "uuid": uuid,
             }
         )
 
@@ -37,17 +55,17 @@ class CharacterRetopology:
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
         d = src_dict.copy()
+        feedback = d.pop("feedback")
+
         uuid = d.pop("uuid")
 
-        state = d.pop("state")
-
-        character_retopology = cls(
+        character_feedback_request = cls(
+            feedback=feedback,
             uuid=uuid,
-            state=state,
         )
 
-        character_retopology.additional_properties = d
-        return character_retopology
+        character_feedback_request.additional_properties = d
+        return character_feedback_request
 
     @property
     def additional_keys(self) -> List[str]:

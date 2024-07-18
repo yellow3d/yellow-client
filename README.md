@@ -1,6 +1,12 @@
 # yellow-api-client
 A client library for accessing Yellow Python API.
 
+## [DEPRECATED]
+
+### Notice of Deprecation
+
+This project is no longer maintained as of July 2024. It may no longer work with newer versions of the Yellow API, and no further updates or fixes will be provided.
+
 ## Modules:
 
 ### YellowSculpt

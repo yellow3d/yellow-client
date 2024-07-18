@@ -3,7 +3,6 @@ import click
 # from .client import AuthenticatedClient, Client
 from yellow.client.cli.auth import auth
 from yellow.client.cli.common import host_option
-from yellow.client.cli.retopology import retopology
 from yellow.client.cli.sculpt import sculpt
 
 
@@ -16,7 +15,6 @@ def cli(ctx, host):
 
 cli.add_command(auth)
 cli.add_command(sculpt)
-cli.add_command(retopology)
 
 if __name__ == "__main__":
     cli()

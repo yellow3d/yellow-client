@@ -1,3 +1,4 @@
+import datetime
 from http import HTTPStatus
 from typing import Any, Dict, List, Optional, Union
 
@@ -5,17 +6,35 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.character_generation import CharacterGeneration
 from ...models.error_message import ErrorMessage
+from ...models.paginated_character_generation_list import PaginatedCharacterGenerationList
 from ...models.sculpt_characters_list_state_item import SculptCharactersListStateItem
 from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
     *,
+    end_date: Union[Unset, datetime.date] = UNSET,
+    page: Union[Unset, int] = UNSET,
+    page_size: Union[Unset, int] = UNSET,
+    start_date: Union[Unset, datetime.date] = UNSET,
     state: Union[Unset, List[SculptCharactersListStateItem]] = UNSET,
 ) -> Dict[str, Any]:
     params: Dict[str, Any] = {}
+
+    json_end_date: Union[Unset, str] = UNSET
+    if not isinstance(end_date, Unset):
+        json_end_date = end_date.isoformat()
+    params["end_date"] = json_end_date
+
+    params["page"] = page
+
+    params["page_size"] = page_size
+
+    json_start_date: Union[Unset, str] = UNSET
+    if not isinstance(start_date, Unset):
+        json_start_date = start_date.isoformat()
+    params["start_date"] = json_start_date
 
     json_state: Union[Unset, List[str]] = UNSET
     if not isinstance(state, Unset):
@@ -39,7 +58,7 @@ def _get_kwargs(
 
 def _parse_response(
     *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[ErrorMessage, List["CharacterGeneration"]]]:
+) -> Optional[Union[ErrorMessage, PaginatedCharacterGenerationList]]:
     if response.status_code == HTTPStatus.BAD_REQUEST:
         response_400 = ErrorMessage.from_dict(response.json())
 
@@ -49,12 +68,7 @@ def _parse_response(
 
         return response_401
     if response.status_code == HTTPStatus.OK:
-        response_200 = []
-        _response_200 = response.json()
-        for response_200_item_data in _response_200:
-            response_200_item = CharacterGeneration.from_dict(response_200_item_data)
-
-            response_200.append(response_200_item)
+        response_200 = PaginatedCharacterGenerationList.from_dict(response.json())
 
         return response_200
     if client.raise_on_unexpected_status:
@@ -65,7 +79,7 @@ def _parse_response(
 
 def _build_response(
     *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[ErrorMessage, List["CharacterGeneration"]]]:
+) -> Response[Union[ErrorMessage, PaginatedCharacterGenerationList]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -77,11 +91,19 @@ def _build_response(
 def sync_detailed(
     *,
     client: AuthenticatedClient,
+    end_date: Union[Unset, datetime.date] = UNSET,
+    page: Union[Unset, int] = UNSET,
+    page_size: Union[Unset, int] = UNSET,
+    start_date: Union[Unset, datetime.date] = UNSET,
     state: Union[Unset, List[SculptCharactersListStateItem]] = UNSET,
-) -> Response[Union[ErrorMessage, List["CharacterGeneration"]]]:
+) -> Response[Union[ErrorMessage, PaginatedCharacterGenerationList]]:
     """Lists already generated characters.
 
     Args:
+        end_date (Union[Unset, datetime.date]):
+        page (Union[Unset, int]):
+        page_size (Union[Unset, int]):
+        start_date (Union[Unset, datetime.date]):
         state (Union[Unset, List[SculptCharactersListStateItem]]):
 
     Raises:
@@ -89,10 +111,14 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[ErrorMessage, List['CharacterGeneration']]]
+        Response[Union[ErrorMessage, PaginatedCharacterGenerationList]]
     """
 
     kwargs = _get_kwargs(
+        end_date=end_date,
+        page=page,
+        page_size=page_size,
+        start_date=start_date,
         state=state,
     )
 
@@ -106,11 +132,19 @@ def sync_detailed(
 def sync(
     *,
     client: AuthenticatedClient,
+    end_date: Union[Unset, datetime.date] = UNSET,
+    page: Union[Unset, int] = UNSET,
+    page_size: Union[Unset, int] = UNSET,
+    start_date: Union[Unset, datetime.date] = UNSET,
     state: Union[Unset, List[SculptCharactersListStateItem]] = UNSET,
-) -> Optional[Union[ErrorMessage, List["CharacterGeneration"]]]:
+) -> Optional[Union[ErrorMessage, PaginatedCharacterGenerationList]]:
     """Lists already generated characters.
 
     Args:
+        end_date (Union[Unset, datetime.date]):
+        page (Union[Unset, int]):
+        page_size (Union[Unset, int]):
+        start_date (Union[Unset, datetime.date]):
         state (Union[Unset, List[SculptCharactersListStateItem]]):
 
     Raises:
@@ -118,11 +152,15 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[ErrorMessage, List['CharacterGeneration']]
+        Union[ErrorMessage, PaginatedCharacterGenerationList]
     """
 
     return sync_detailed(
         client=client,
+        end_date=end_date,
+        page=page,
+        page_size=page_size,
+        start_date=start_date,
         state=state,
     ).parsed
 
@@ -130,11 +168,19 @@ def sync(
 async def asyncio_detailed(
     *,
     client: AuthenticatedClient,
+    end_date: Union[Unset, datetime.date] = UNSET,
+    page: Union[Unset, int] = UNSET,
+    page_size: Union[Unset, int] = UNSET,
+    start_date: Union[Unset, datetime.date] = UNSET,
     state: Union[Unset, List[SculptCharactersListStateItem]] = UNSET,
-) -> Response[Union[ErrorMessage, List["CharacterGeneration"]]]:
+) -> Response[Union[ErrorMessage, PaginatedCharacterGenerationList]]:
     """Lists already generated characters.
 
     Args:
+        end_date (Union[Unset, datetime.date]):
+        page (Union[Unset, int]):
+        page_size (Union[Unset, int]):
+        start_date (Union[Unset, datetime.date]):
         state (Union[Unset, List[SculptCharactersListStateItem]]):
 
     Raises:
@@ -142,10 +188,14 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[ErrorMessage, List['CharacterGeneration']]]
+        Response[Union[ErrorMessage, PaginatedCharacterGenerationList]]
     """
 
     kwargs = _get_kwargs(
+        end_date=end_date,
+        page=page,
+        page_size=page_size,
+        start_date=start_date,
         state=state,
     )
 
@@ -157,11 +207,19 @@ async def asyncio_detailed(
 async def asyncio(
     *,
     client: AuthenticatedClient,
+    end_date: Union[Unset, datetime.date] = UNSET,
+    page: Union[Unset, int] = UNSET,
+    page_size: Union[Unset, int] = UNSET,
+    start_date: Union[Unset, datetime.date] = UNSET,
     state: Union[Unset, List[SculptCharactersListStateItem]] = UNSET,
-) -> Optional[Union[ErrorMessage, List["CharacterGeneration"]]]:
+) -> Optional[Union[ErrorMessage, PaginatedCharacterGenerationList]]:
     """Lists already generated characters.
 
     Args:
+        end_date (Union[Unset, datetime.date]):
+        page (Union[Unset, int]):
+        page_size (Union[Unset, int]):
+        start_date (Union[Unset, datetime.date]):
         state (Union[Unset, List[SculptCharactersListStateItem]]):
 
     Raises:
@@ -169,12 +227,16 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[ErrorMessage, List['CharacterGeneration']]
+        Union[ErrorMessage, PaginatedCharacterGenerationList]
     """
 
     return (
         await asyncio_detailed(
             client=client,
+            end_date=end_date,
+            page=page,
+            page_size=page_size,
+            start_date=start_date,
             state=state,
         )
     ).parsed

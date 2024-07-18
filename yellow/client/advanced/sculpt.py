@@ -1,28 +1,27 @@
-import sys
 import json
-import re
-from typing import List, Optional, Dict
-from pathlib import Path
-import shutil
-import time
 import logging
+import re
+import shutil
+import sys
+import time
+from pathlib import Path
+from typing import Dict, Iterable, List, Optional
 
 from tqdm import tqdm
 
 from yellow.client.advanced.auth import YellowAuthenticator
-from yellow.client.api.sculpt import (
-    sculpt_characters_list,
-    sculpt_characters_create,
-    sculpt_characters_status_retrieve,
-    sculpt_characters_fetch_retrieve
-)
-from yellow.client.models import CharacterSpecRequest
+from yellow.client.api.sculpt import (sculpt_characters_archive_partial_update,
+                                      sculpt_characters_cancel_partial_update,
+                                      sculpt_characters_create,
+                                      sculpt_characters_feedback_create,
+                                      sculpt_characters_fetch_retrieve,
+                                      sculpt_characters_list,
+                                      sculpt_characters_status_retrieve)
+from yellow.client.models import CharacterFeedbackRequest, CharacterSpecRequest
 from yellow.client.models.gender_enum import GenderEnum
-from yellow.client.models.file_format_enum import FileFormatEnum
-from yellow.client.models.rig_type_enum import RigTypeEnum
+from yellow.client.models.sculpt_characters_fetch_retrieve_file_format import SculptCharactersFetchRetrieveFileFormat
+from yellow.client.models.sculpt_characters_fetch_retrieve_rig_type import SculptCharactersFetchRetrieveRigType
 from yellow.client.types import Response
-
-
 
 logger = logging.getLogger("yellow-client")
 
@@ -38,24 +37,53 @@ class YellowSculpt:
     ):
         self.auth = auth
         self.api_client = auth.client
-    
-    def get_assets_list(self) -> List[Dict]:
+
+    def get_assets(self, **kwargs) -> Iterable[Dict]:
+        """Get list of the historical list of prompts and generations.
+
+        Yields:
+            Generator[Dict]: Description of generated assets
+        """
+        page = 1
+        while True:
+            response: Response = sculpt_characters_list.sync_detailed(
+                client=self.api_client, page=page, **kwargs
+            )
+            self.auth.raise_satus_error(response)
+            paginated_list = json.loads(response.content.decode())
+            yield from paginated_list["results"]
+            if not paginated_list["next"]:
+                break
+            page += 1
+
+    def get_latest_k_assets(self, k: int = 10, **kwargs) -> Iterable[Dict]:
+        """Get list of latest k historical prompts and generations.
+
+        Args:
+            k (int): Numer of latest generations to return.
+
+        Returns:
+            List[Dict]: List of k latest descriptions of generated assets
+        """
+        response: Response = sculpt_characters_list.sync_detailed(
+            client=self.api_client, page=1, page_size=k, **kwargs
+        )
+        self.auth.raise_satus_error(response)
+        paginated_list = json.loads(response.content.decode())
+        return paginated_list["results"]
+
+    def get_assets_list(self, **kwargs) -> List[Dict]:
         """Get list of the historical list of prompts and generations.
 
         Returns:
             List[Dict]: List of descriptions of generated assets
         """
-        response: Response = sculpt_characters_list.sync_detailed(client=self.api_client)
-        print(response)
-        self.auth.raise_satus_error(response)
-        
-        assets_list = json.loads(response.content.decode()) 
-        return assets_list
-    
+        return list(self.get_assets(**kwargs))
+
     def print_assets_list(self):
         """Print list of the historical list of prompts and generations.
         """
-        assets_list = self.get_assets_list()
+        assets_list = self.get_assets()
         for asset in assets_list:
             print(asset)
             
@@ -128,6 +156,72 @@ class YellowSculpt:
 
             return json_respone        
         
+    def add_feedback(self, uuid: str, feedback: str) -> Dict:
+        """Add feedback for an asset.
+
+        Args:
+            uuid (str): UUID of an asset
+            
+        Raises:
+            ConnectionError: Error recevied from the Yellow API during checkign a job status
+
+        Returns:
+            Dict: Feedback
+        """
+        logger.info(f"Adding feedback for UUID: {uuid}")
+        request = CharacterFeedbackRequest(feedback, uuid)
+        response: Response = sculpt_characters_feedback_create.sync_detailed(
+            client=self.api_client, body=request,
+        )
+        self.auth.raise_satus_error(response)
+        
+        status_data = json.loads(response.content.decode())
+        return status_data
+
+    def cancel_generation(self, uuid: str) -> Dict:
+        """Cancel an asset generation process.
+
+        Args:
+            uuid (str): UUID of an asset
+            
+        Raises:
+            ConnectionError: Error recevied from the Yellow API during checkign a job status
+
+        Returns:
+            Dict: Cancellation status
+        """
+        logger.info(f"Canceling UUID: {uuid}")
+        response: Response = sculpt_characters_cancel_partial_update.sync_detailed(
+            client=self.api_client, 
+            generation_id=uuid,
+        )
+        self.auth.raise_satus_error(response)
+        
+        status_data = json.loads(response.content.decode())
+        return status_data
+
+    def archive_generation(self, uuid: str) -> Dict:
+        """Archive a generation.
+
+        Args:
+            uuid (str): UUID of an asset
+
+        Raises:
+            ConnectionError: Error recevied from the Yellow API during checking a job status
+
+        Returns:
+            Dict: UUID of an asset
+        """
+        logger.info(f"Archiving UUID: {uuid}")
+        response: Response = sculpt_characters_archive_partial_update.sync_detailed(
+            client=self.api_client, 
+            generation_id=uuid,
+        )
+        self.auth.raise_satus_error(response)
+
+        status_data = json.loads(response.content.decode())
+        return status_data
+
     def check_asset_status(self, uuid: str) -> Dict:
         """Check current status of an asset generation process.
 
@@ -154,8 +248,8 @@ class YellowSculpt:
             self, 
             uuid: str, 
             output_dir: str, 
-            file_format: str = FileFormatEnum.OBJ,
-            rig_type: str = RigTypeEnum.NO_RIG,
+            file_format: str = SculptCharactersFetchRetrieveFileFormat.OBJ,
+            rig_type: str = SculptCharactersFetchRetrieveRigType.NO_RIG,
         )-> str:
         """Fetch/download an generated asset.
 
@@ -172,8 +266,8 @@ class YellowSculpt:
             str: Output path
         """
 
-        file_format = FileFormatEnum(file_format)
-        rig_type = RigTypeEnum(rig_type)
+        file_format = SculptCharactersFetchRetrieveFileFormat(file_format)
+        rig_type = SculptCharactersFetchRetrieveRigType(rig_type)
 
         logger.info(f"Checking status of UUID: {uuid}")
         response: Response = sculpt_characters_status_retrieve.sync_detailed(

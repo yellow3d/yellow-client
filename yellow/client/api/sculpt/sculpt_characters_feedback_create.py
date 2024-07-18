@@ -5,26 +5,27 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.character_feedback import CharacterFeedback
+from ...models.character_feedback_request import CharacterFeedbackRequest
 from ...models.error_message import ErrorMessage
-from ...models.file_upload_request import FileUploadRequest
-from ...models.uuid import UUID
 from ...types import Response
 
 
 def _get_kwargs(
     *,
-    body: FileUploadRequest,
+    body: CharacterFeedbackRequest,
 ) -> Dict[str, Any]:
     headers: Dict[str, Any] = {}
 
     _kwargs: Dict[str, Any] = {
         "method": "post",
-        "url": "/api/retopology/characters/create",
+        "url": "/api/sculpt/characters/feedback",
     }
 
-    _body = body.to_multipart()
+    _json_body = body.to_dict()
 
-    _kwargs["files"] = _body
+    _kwargs["json"] = _json_body
+    headers["Content-Type"] = "application/json"
 
     _kwargs["headers"] = headers
     return _kwargs
@@ -32,7 +33,7 @@ def _get_kwargs(
 
 def _parse_response(
     *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[ErrorMessage, UUID]]:
+) -> Optional[Union[CharacterFeedback, ErrorMessage]]:
     if response.status_code == HTTPStatus.BAD_REQUEST:
         response_400 = ErrorMessage.from_dict(response.json())
 
@@ -42,7 +43,7 @@ def _parse_response(
 
         return response_401
     if response.status_code == HTTPStatus.CREATED:
-        response_201 = UUID.from_dict(response.json())
+        response_201 = CharacterFeedback.from_dict(response.json())
 
         return response_201
     if client.raise_on_unexpected_status:
@@ -53,7 +54,7 @@ def _parse_response(
 
 def _build_response(
     *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[ErrorMessage, UUID]]:
+) -> Response[Union[CharacterFeedback, ErrorMessage]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -65,24 +66,19 @@ def _build_response(
 def sync_detailed(
     *,
     client: AuthenticatedClient,
-    body: FileUploadRequest,
-) -> Response[Union[ErrorMessage, UUID]]:
-    """Launches a new retopology process for a characters.
-
-    Character has to be already alligned in following way:
-    * z-axis needs to be the front-facing axis
-    * y-axis should be the up axis
-    * mesh should be in A-pose
+    body: CharacterFeedbackRequest,
+) -> Response[Union[CharacterFeedback, ErrorMessage]]:
+    """Submits a feedback for a character.
 
     Args:
-        body (FileUploadRequest):
+        body (CharacterFeedbackRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[ErrorMessage, UUID]]
+        Response[Union[CharacterFeedback, ErrorMessage]]
     """
 
     kwargs = _get_kwargs(
@@ -99,24 +95,19 @@ def sync_detailed(
 def sync(
     *,
     client: AuthenticatedClient,
-    body: FileUploadRequest,
-) -> Optional[Union[ErrorMessage, UUID]]:
-    """Launches a new retopology process for a characters.
-
-    Character has to be already alligned in following way:
-    * z-axis needs to be the front-facing axis
-    * y-axis should be the up axis
-    * mesh should be in A-pose
+    body: CharacterFeedbackRequest,
+) -> Optional[Union[CharacterFeedback, ErrorMessage]]:
+    """Submits a feedback for a character.
 
     Args:
-        body (FileUploadRequest):
+        body (CharacterFeedbackRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[ErrorMessage, UUID]
+        Union[CharacterFeedback, ErrorMessage]
     """
 
     return sync_detailed(
@@ -128,24 +119,19 @@ def sync(
 async def asyncio_detailed(
     *,
     client: AuthenticatedClient,
-    body: FileUploadRequest,
-) -> Response[Union[ErrorMessage, UUID]]:
-    """Launches a new retopology process for a characters.
-
-    Character has to be already alligned in following way:
-    * z-axis needs to be the front-facing axis
-    * y-axis should be the up axis
-    * mesh should be in A-pose
+    body: CharacterFeedbackRequest,
+) -> Response[Union[CharacterFeedback, ErrorMessage]]:
+    """Submits a feedback for a character.
 
     Args:
-        body (FileUploadRequest):
+        body (CharacterFeedbackRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[ErrorMessage, UUID]]
+        Response[Union[CharacterFeedback, ErrorMessage]]
     """
 
     kwargs = _get_kwargs(
@@ -160,24 +146,19 @@ async def asyncio_detailed(
 async def asyncio(
     *,
     client: AuthenticatedClient,
-    body: FileUploadRequest,
-) -> Optional[Union[ErrorMessage, UUID]]:
-    """Launches a new retopology process for a characters.
-
-    Character has to be already alligned in following way:
-    * z-axis needs to be the front-facing axis
-    * y-axis should be the up axis
-    * mesh should be in A-pose
+    body: CharacterFeedbackRequest,
+) -> Optional[Union[CharacterFeedback, ErrorMessage]]:
+    """Submits a feedback for a character.
 
     Args:
-        body (FileUploadRequest):
+        body (CharacterFeedbackRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[ErrorMessage, UUID]
+        Union[CharacterFeedback, ErrorMessage]
     """
 
     return (
